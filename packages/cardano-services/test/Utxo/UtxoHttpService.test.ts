@@ -1,0 +1,126 @@
+/* eslint-disable max-len */
+import { DbSyncUtxoProvider, HttpServer, HttpServerConfig, UtxoHttpService } from '../../src';
+import { Pool } from 'pg';
+import { UtxoProvider } from '@cardano-sdk/core';
+import { getPort } from 'get-port-please';
+import { utxoHttpProvider } from '@cardano-sdk/cardano-services-client';
+import got from 'got';
+
+const APPLICATION_JSON = 'application/json';
+const APPLICATION_CBOR = 'application/cbor';
+const UNSUPPORTED_MEDIA_STRING = 'Response code 415 (Unsupported Media Type)';
+const BAD_REQUEST_STRING = 'Response code 400 (Bad Request)';
+
+describe('UtxoHttpService', () => {
+  let dbConnection: Pool;
+  let httpServer: HttpServer;
+  let utxoProvider: DbSyncUtxoProvider;
+  let service: UtxoHttpService;
+  let port: number;
+  let apiUrlBase: string;
+  let config: HttpServerConfig;
+
+  beforeAll(async () => {
+    port = await getPort();
+    apiUrlBase = `http://localhost:${port}/utxo`;
+    config = { listen: { port } };
+    dbConnection = new Pool({ connectionString: process.env.DB_CONNECTION_STRING });
+  });
+
+  afterEach(async () => {
+    jest.resetAllMocks();
+  });
+
+  const doServerRequest = (arg: unknown) =>
+    got
+      .post(`${apiUrlBase}/search`, {
+        json: { args: [arg] }
+      })
+      .json();
+
+  describe('healthy state', () => {
+    beforeAll(async () => {
+      utxoProvider = new DbSyncUtxoProvider(dbConnection);
+      service = UtxoHttpService.create({ utxoProvider });
+      httpServer = new HttpServer(config, { services: [service] });
+      await httpServer.initialize();
+      await httpServer.start();
+    });
+
+    afterAll(async () => {
+      await dbConnection.end();
+      await httpServer.shutdown();
+    });
+
+    describe('/health', () => {
+      it('/health response should be true', async () => {
+        const res = await got(`${apiUrlBase}/health`, {
+          headers: { 'Content-Type': APPLICATION_JSON }
+        });
+        expect(res.statusCode).toBe(200);
+        expect(JSON.parse(res.body)).toEqual({ ok: true });
+      });
+    });
+    describe('/search', () => {
+      it('returns a 415 coded response if the wrong content type header is used', async () => {
+        try {
+          await got.post(`${apiUrlBase}/search`, {
+            headers: { 'Content-Type': APPLICATION_CBOR }
+          });
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          expect(error.response.statusCode).toBe(415);
+          expect(error.message).toBe(UNSUPPORTED_MEDIA_STRING);
+        }
+      });
+      it('returns 400 coded respons if the request is bad formed', async () => {
+        try {
+          await got.post(`${apiUrlBase}/search`, {
+            json: { addresses: ['asd'] }
+          });
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          expect(error.response.statusCode).toBe(400);
+          expect(error.message).toBe(BAD_REQUEST_STRING);
+        }
+      });
+      it('should search by a single address', async () => {
+        const req = ['asd'];
+        const res = await doServerRequest(req);
+        expect(res).toMatchSnapshot();
+      });
+      it('should search by multiple addresses', async () => {
+        const req = [
+          'addr_test1qpcnmvyjmxmsm75f747u566gw7ewz4mesdw7yl278uf9r3f5l7d7dpx2ymfwlm3e56flupga8yamjr2kwdt7dw77ktyqqtx2r7',
+          'addr_test1qr4m502gr9hnaxac5mxjln22jwavf7pcjmh9sw7fujdvgvj9ef6afquphwg7tj4mmm548m3t50hxfyygjuu222kx96eshcathg',
+          'addr_test1qz2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnj83ws8lhrn648jjxtwq2ytjqp'
+        ];
+        const res = await doServerRequest(req);
+        expect(res).toMatchSnapshot();
+      });
+      it('should successfully return utxos with multi assets', async () => {
+        const req = [
+          'addr_test1qrcj98ukemwfuwc72ad95yydnx83qch6s7plr8rg44nxv53fumt3ljeck26752eajzyavd8my3cp8cx3x2c538lx7h5swm4j4n',
+          'addr_test1qretqkqqvc4dax3482tpjdazrfl8exey274m3mzch3dv8lu476aeq3kd8q8splpsswcfmv4y370e8r76rc8lnnhte49qqyjmtc'
+        ];
+        const res = await doServerRequest(req);
+        expect(res).toMatchSnapshot();
+      });
+    });
+    describe('with utxoHttpProvider', () => {
+      let provider: UtxoProvider;
+      beforeEach(() => {
+        provider = utxoHttpProvider(apiUrlBase);
+      });
+
+      it('response is an array of utxos', async () => {
+        const addresses = [
+          'addr_test1qrcj98ukemwfuwc72ad95yydnx83qch6s7plr8rg44nxv53fumt3ljeck26752eajzyavd8my3cp8cx3x2c538lx7h5swm4j4n',
+          'addr_test1qretqkqqvc4dax3482tpjdazrfl8exey274m3mzch3dv8lu476aeq3kd8q8splpsswcfmv4y370e8r76rc8lnnhte49qqyjmtc'
+        ];
+        const response = await provider.utxoByAddresses(addresses);
+        expect(response).toHaveLength(2);
+      });
+    });
+  });
+});
