@@ -1,19 +1,17 @@
 import { Cardano } from '@cardano-sdk/core';
 import { UtxoModel } from './types';
-
-const generateAssetId = (policy: string, name: string) =>
-  Cardano.AssetId(policy + (!name || name === '' ? '\\x' : name));
+import { generateAssetId, generateUtxoId } from './util';
 
 /**
- * Indexes the given utxos by its coin id in order to generate core utxo objects
+ * Transform DB results into indexed core UTxO
  *
- * @param {UtxoModel[]} utxos  obtained utxos rows
- * @returns {Cardano.Utxo[]} an array of core utxo objects
+ * @param {UtxoModel[]} utxosModels  UTxO query rows
+ * @returns {Cardano.Utxo[]} an array of core UTxO objects
  */
-export const toUtxoByAddressesResponse = (utxos: UtxoModel[]): Cardano.Utxo[] => {
-  const utxosByCoin = utxos.reduce((coins, current) => {
-    const coinId = `${current.tx_id}:${current.index}`;
-    const utxo = coins.get(coinId);
+export const utxosToCore = (utxosModels: UtxoModel[]): Cardano.Utxo[] => {
+  const utxosMap = utxosModels.reduce((utxos, current) => {
+    const utxoId = generateUtxoId(current.tx_id, current.index);
+    const utxo = utxos.get(utxoId);
     if (utxo) {
       const txIn = utxo[0];
       const txOut = utxo[1];
@@ -22,7 +20,7 @@ export const toUtxoByAddressesResponse = (utxos: UtxoModel[]): Cardano.Utxo[] =>
         newAssets.set(generateAssetId(current.asset_policy, current.asset_name), BigInt(current.asset_quantity));
         txOut.value.assets = newAssets;
       }
-      coins.set(coinId, [txIn, txOut]);
+      utxos.set(utxoId, [txIn, txOut]);
     } else {
       const address = Cardano.Address(current.address);
       const txOut: Cardano.TxOut = {
@@ -37,7 +35,7 @@ export const toUtxoByAddressesResponse = (utxos: UtxoModel[]): Cardano.Utxo[] =>
           [generateAssetId(current.asset_policy, current.asset_name), BigInt(current.asset_quantity)]
         ]);
       }
-      coins.set(coinId, [
+      utxos.set(utxoId, [
         {
           address,
           index: current.index,
@@ -46,7 +44,7 @@ export const toUtxoByAddressesResponse = (utxos: UtxoModel[]): Cardano.Utxo[] =>
         txOut
       ]);
     }
-    return coins;
+    return utxos;
   }, new Map<string, Cardano.Utxo>());
-  return [...utxosByCoin.values()];
+  return [...utxosMap.values()];
 };

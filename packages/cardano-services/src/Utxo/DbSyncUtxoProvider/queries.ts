@@ -23,5 +23,3 @@ WHERE NOT EXISTS
 WHERE tx_outer.id = tx_out.id
   ) AND address = ANY($1)
 `;
-
-export const healthCheckQuery = 'SELECT 1';

@@ -56,7 +56,7 @@ export const loadHttpServer = async (args: ProgramArgs): Promise<HttpServer> => 
         break;
       case ServiceNames.Utxo:
         if (args.options?.dbConnectionString === undefined)
-          throw new MissingProgramOption(ServiceNames.StakePoolSearch, ProgramOptionDescriptions.DbConnection);
+          throw new MissingProgramOption(ServiceNames.Utxo, ProgramOptionDescriptions.DbConnection);
         services.push(
           await UtxoHttpService.create({
             logger,

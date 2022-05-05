@@ -11,7 +11,7 @@
   "paths": {
     "/utxo/search": {
       "post": {
-        "summary": "utxo search",
+        "summary": "UTxO search",
         "operationId": "utxoSearch",
         "requestBody": {
           "content": {
@@ -65,7 +65,7 @@
           "$ref": "#/components/schemas/Utxo"
         }
       },
-      "Addess": {
+      "Address": {
         "type": "string",
         "example": "addr_test1qpu5vlrf4xkxv2qpwngf6cjhtw542ayty80v8dyr49rf5ewvxwdrt70qlcpeeagscasafhffqsxy36t90ldv06wqrk2qum8x5w"
       },
@@ -86,7 +86,7 @@
         "type": "object",
         "properties": {
           "address": {
-            "$ref": "#/components/schemas/Addess"
+            "$ref": "#/components/schemas/Address"
           },
           "txId": {
             "type": "string",
@@ -109,7 +109,7 @@
         "type": "object",
         "properties": {
           "address": {
-            "$ref": "#/components/schemas/Addess"
+            "$ref": "#/components/schemas/Address"
           },
           "value": {
             "$ref": "#/components/schemas/Value"
@@ -157,7 +157,7 @@
             "items": {
               "type": "array",
               "items":{
-                "$ref": "#/components/schemas/Addess"
+                "$ref": "#/components/schemas/Address"
               }
             }
           }
