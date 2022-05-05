@@ -53,6 +53,7 @@ export const createHttpProvider = <T extends object>({
       if (!path)
         throw new ProviderError(ProviderFailure.NotImplemented, `HttpProvider missing path for '${prop.toString()}'`);
       return async (...args: any[]) => {
+        const url = baseUrl + path;
         try {
           const req: OptionsOfJSONResponseBody = {
             ...gotOptions,
@@ -62,9 +63,9 @@ export const createHttpProvider = <T extends object>({
             resolveBodyOnly: false,
             responseType: 'json',
             stringifyJson: (obj) => JSON.stringify(util.toSerializableObject(obj)),
-            url: baseUrl + path
+            url
           };
-          return (await got.post(req).json()) || undefined;
+          return method !== 'healthCheck' ? await got.post(req).json() : (await got.get(url).json()) || undefined;
         } catch (error) {
           if (error instanceof RequestError) {
             if (error instanceof HTTPError) {
