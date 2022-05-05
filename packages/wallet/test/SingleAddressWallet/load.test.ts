@@ -8,6 +8,7 @@ import { WalletStores, createInMemoryWalletStores } from '../../src/persistence'
 import {
   currentEpoch,
   mockNetworkInfoProvider,
+  mockUtxoProvider,
   networkInfo,
   queryTransactionsResult,
   queryTransactionsResult2
@@ -26,6 +27,7 @@ const createWallet = async (stores: WalletStores, walletProvider: WalletProvider
   const assetProvider = mocks.mockAssetProvider();
   const stakePoolSearchProvider = createStubStakePoolSearchProvider();
   const networkInfoProvider = mockNetworkInfoProvider();
+  const utxoProvider = mockUtxoProvider();
   const groupedAddress: KeyManagement.GroupedAddress = {
     accountIndex: 0,
     address,
@@ -38,7 +40,16 @@ const createWallet = async (stores: WalletStores, walletProvider: WalletProvider
   keyAgent.knownAddresses.push(groupedAddress);
   return new SingleAddressWallet(
     { name },
-    { assetProvider, keyAgent, networkInfoProvider, stakePoolSearchProvider, stores, txSubmitProvider, walletProvider }
+    {
+      assetProvider,
+      keyAgent,
+      networkInfoProvider,
+      stakePoolSearchProvider,
+      stores,
+      txSubmitProvider,
+      utxoProvider,
+      walletProvider
+    }
   );
 };
 
