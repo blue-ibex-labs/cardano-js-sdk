@@ -127,7 +127,7 @@ describe('StakePoolSearchHttpService', () => {
           const reqWithPagination = { pagination: { limit: 2, startAt: 1 } };
           const response = await doServerRequest(req);
           const responseWithPagination = await doServerRequest(reqWithPagination);
-          expect(response.length).toEqual(8);
+          expect(response.length).toEqual(9);
           expect(responseWithPagination.length).toEqual(2);
           expect(response[0]).not.toEqual(responseWithPagination[0]);
         });
@@ -136,7 +136,7 @@ describe('StakePoolSearchHttpService', () => {
           const reqWithPagination = { ...req, pagination: { limit: 2, startAt: 1 } };
           const response = await doServerRequest(req);
           const responseWithPagination = await doServerRequest(reqWithPagination);
-          expect(response.length).toEqual(8);
+          expect(response.length).toEqual(9);
           expect(responseWithPagination.length).toEqual(2);
           expect(response[0]).not.toEqual(responseWithPagination[0]);
         });

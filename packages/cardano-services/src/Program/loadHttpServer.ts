@@ -1,3 +1,4 @@
+import { ChainHistoryHttpService, DbSyncChainHistoryProvider } from '../ChainHistory';
 import { DbSyncStakePoolSearchProvider, StakePoolSearchHttpService } from '../StakePoolSearch';
 import { HttpServer, HttpServerConfig, HttpService } from '../Http';
 import { LogLevel, createLogger } from 'bunyan';
@@ -10,7 +11,7 @@ import { ogmiosTxSubmitProvider } from '@cardano-sdk/ogmios';
 
 export interface ProgramArgs {
   apiUrl: URL;
-  serviceNames: (ServiceNames.StakePoolSearch | ServiceNames.TxSubmit)[];
+  serviceNames: (ServiceNames.StakePoolSearch | ServiceNames.TxSubmit | ServiceNames.ChainHistory)[];
   options?: {
     dbConnectionString?: string;
     loggerMinSeverity?: LogLevel;
@@ -50,6 +51,19 @@ export const loadHttpServer = async (args: ProgramArgs): Promise<HttpServer> => 
               port: args.options?.ogmiosUrl ? Number.parseInt(args.options.ogmiosUrl.port) : undefined,
               tls: args.options?.ogmiosUrl?.protocol === 'wss'
             })
+          })
+        );
+        break;
+      case ServiceNames.ChainHistory:
+        if (args.options?.dbConnectionString === undefined)
+          throw new MissingProgramOption(ServiceNames.ChainHistory, ProgramOptionDescriptions.DbConnection);
+        services.push(
+          await ChainHistoryHttpService.create({
+            chainHistoryProvider: new DbSyncChainHistoryProvider(
+              new Pool({ connectionString: args.options.dbConnectionString }),
+              logger
+            ),
+            logger
           })
         );
         break;
