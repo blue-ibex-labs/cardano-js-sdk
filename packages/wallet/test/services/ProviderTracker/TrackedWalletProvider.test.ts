@@ -119,15 +119,6 @@ describe('TrackedWalletProvider', () => {
       )
     );
 
-    // test(
-    //   'utxoByAddresses',
-    //   testFunctionStats(
-    //     (wp) => wp.utxoByAddresses([]),
-    //     (stats) => stats.utxoByAddresses$,
-    //     (mockWP) => mockWP.utxoByAddresses
-    //   )
-    // );
-
     test(
       'rewards',
       testFunctionStats(
