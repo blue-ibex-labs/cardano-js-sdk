@@ -4,7 +4,11 @@
 import { BlockFrostAPI, Responses } from '@blockfrost/blockfrost-js';
 import { Cardano, StakePoolStats, WalletProvider } from '@cardano-sdk/core';
 import { blockfrostWalletProvider } from '../src';
+import { utxoHttpProvider } from '@cardano-sdk/cardano-services-client';
+
 jest.mock('@blockfrost/blockfrost-js');
+
+const url = 'http://some-hostname:3000/utxo';
 
 const generatePoolsResponseMock = (qty: number) =>
   [...Array.from({ length: qty }).keys()].map((num) => String(Math.random() * num)) as Responses['pool_list'];
@@ -70,7 +74,8 @@ describe('blockfrostWalletProvider', () => {
       .mockReturnValueOnce(generatePoolsResponseMock(77));
 
     const blockfrost = new BlockFrostAPI({ isTestnet: true, projectId: apiKey });
-    const client = blockfrostWalletProvider(blockfrost);
+    const utxoProvider = utxoHttpProvider(url);
+    const client = blockfrostWalletProvider(blockfrost, utxoProvider);
     const response = await client.stakePoolStats!();
 
     expect(response).toMatchObject<StakePoolStats>({
@@ -91,7 +96,9 @@ describe('blockfrostWalletProvider', () => {
         .mockResolvedValueOnce(generateUtxoResponseMock(0));
 
       const blockfrost = new BlockFrostAPI({ isTestnet: true, projectId: apiKey });
-      const client = blockfrostWalletProvider(blockfrost);
+      const utxoProvider = utxoHttpProvider(url);
+      const client = blockfrostWalletProvider(blockfrost, utxoProvider);
+
       const response = await client.utxoByAddresses(
         [
           'addr_test1qz2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnj83ws8lhrn648jjxtwq2ytjqp'
@@ -149,7 +156,8 @@ describe('blockfrostWalletProvider', () => {
       BlockFrostAPI.prototype.addressesUtxos = jest.fn().mockRejectedValue(notFoundBody);
 
       const blockfrost = new BlockFrostAPI({ isTestnet: true, projectId: apiKey });
-      const client = blockfrostWalletProvider(blockfrost);
+      const utxoProvider = utxoHttpProvider(url);
+      const client = blockfrostWalletProvider(blockfrost, utxoProvider);
       const response = await client.utxoByAddresses(
         [
           'addr_test1qz44wna7xvs8n2ukxw0qat3vktymndgk8nerey6mlxr97s47n48hk78hcuyku03lj7qplmfqscm87j9wv3amxqaur2hs055pjt'
@@ -177,7 +185,8 @@ describe('blockfrostWalletProvider', () => {
       BlockFrostAPI.prototype.accounts = jest.fn().mockResolvedValue(accountsMockResponse);
 
       const blockfrost = new BlockFrostAPI({ isTestnet: true, projectId: apiKey });
-      const client = blockfrostWalletProvider(blockfrost);
+      const utxoProvider = utxoHttpProvider(url);
+      const client = blockfrostWalletProvider(blockfrost, utxoProvider);
       const response = await client.rewardAccountBalance(
         Cardano.RewardAccount('stake_test1uqfu74w3wh4gfzu8m6e7j987h4lq9r3t7ef5gaw497uu85qsqfy27')
       );
@@ -194,7 +203,8 @@ describe('blockfrostWalletProvider', () => {
       BlockFrostAPI.prototype.accounts = jest.fn().mockRejectedValue(notFoundBody);
 
       const blockfrost = new BlockFrostAPI({ isTestnet: true, projectId: apiKey });
-      const client = blockfrostWalletProvider(blockfrost);
+      const utxoProvider = utxoHttpProvider(url);
+      const client = blockfrostWalletProvider(blockfrost, utxoProvider);
       const response = await client.rewardAccountBalance(
         Cardano.RewardAccount('stake_test1up7pvfq8zn4quy45r2g572290p9vf99mr9tn7r9xrgy2l2qdsf58d')
       );
@@ -316,7 +326,8 @@ describe('blockfrostWalletProvider', () => {
       BlockFrostAPI.prototype.txs = jest.fn().mockResolvedValue(mockedTxResponse);
       BlockFrostAPI.prototype.txsMetadata = jest.fn().mockResolvedValue(mockedMetadataResponse);
       const blockfrost = new BlockFrostAPI({ isTestnet: true, projectId: apiKey });
-      const client = blockfrostWalletProvider(blockfrost);
+      const utxoProvider = utxoHttpProvider(url);
+      const client = blockfrostWalletProvider(blockfrost, utxoProvider);
       const response = await client.transactionsByHashes(
         ['4123d70f66414cc921f6ffc29a899aafc7137a99a0fd453d6b200863ef5702d6'].map(Cardano.TransactionId)
       );
@@ -429,7 +440,8 @@ describe('blockfrostWalletProvider', () => {
     BlockFrostAPI.prototype.genesis = jest.fn().mockResolvedValue(mockedResponse);
 
     const blockfrost = new BlockFrostAPI({ isTestnet: true, projectId: apiKey });
-    const client = blockfrostWalletProvider(blockfrost);
+    const utxoProvider = utxoHttpProvider(url);
+    const client = blockfrostWalletProvider(blockfrost, utxoProvider);
     const response = await client.genesisParameters();
 
     expect(response).toMatchObject({
@@ -465,7 +477,8 @@ describe('blockfrostWalletProvider', () => {
     BlockFrostAPI.prototype.axiosInstance = jest.fn().mockResolvedValue(mockedResponse) as any;
 
     const blockfrost = new BlockFrostAPI({ isTestnet: true, projectId: apiKey });
-    const client = blockfrostWalletProvider(blockfrost);
+    const utxoProvider = utxoHttpProvider(url);
+    const client = blockfrostWalletProvider(blockfrost, utxoProvider);
     const response = await client.currentWalletProtocolParameters();
 
     expect(response).toMatchObject({
@@ -486,7 +499,8 @@ describe('blockfrostWalletProvider', () => {
     BlockFrostAPI.prototype.blocksLatest = jest.fn().mockResolvedValue(blockResponse);
 
     const blockfrost = new BlockFrostAPI({ isTestnet: true, projectId: apiKey });
-    const client = blockfrostWalletProvider(blockfrost);
+    const utxoProvider = utxoHttpProvider(url);
+    const client = blockfrostWalletProvider(blockfrost, utxoProvider);
     const response = await client.ledgerTip();
 
     expect(response).toMatchObject({
@@ -500,7 +514,8 @@ describe('blockfrostWalletProvider', () => {
     BlockFrostAPI.prototype.blocks = jest.fn().mockResolvedValue(blockResponse);
 
     const blockfrost = new BlockFrostAPI({ isTestnet: true, projectId: apiKey });
-    const client = blockfrostWalletProvider(blockfrost);
+    const utxoProvider = utxoHttpProvider(url);
+    const client = blockfrostWalletProvider(blockfrost, utxoProvider);
     const response = await client.blocksByHashes([
       Cardano.BlockId('0dbe461fb5f981c0d01615332b8666340eb1a692b3034f46bcb5f5ea4172b2ed')
     ]);
@@ -533,7 +548,8 @@ describe('blockfrostWalletProvider', () => {
     BlockFrostAPI.prototype.blocks = jest.fn().mockResolvedValue({ ...blockResponse, slot_leader: slotLeader });
 
     const blockfrost = new BlockFrostAPI({ isTestnet: true, projectId: apiKey });
-    const client = blockfrostWalletProvider(blockfrost);
+    const utxoProvider = utxoHttpProvider(url);
+    const client = blockfrostWalletProvider(blockfrost, utxoProvider);
     const response = await client.blocksByHashes([
       Cardano.BlockId('0dbe461fb5f981c0d01615332b8666340eb1a692b3034f46bcb5f5ea4172b2ed')
     ]);
@@ -557,7 +573,8 @@ describe('blockfrostWalletProvider', () => {
 
     beforeEach(() => {
       const blockfrost = new BlockFrostAPI({ isTestnet: true, projectId: apiKey });
-      client = blockfrostWalletProvider(blockfrost);
+      const utxoProvider = utxoHttpProvider(url);
+      client = blockfrostWalletProvider(blockfrost, utxoProvider);
     });
 
     test('epoch bounds & query per stake address', async () => {

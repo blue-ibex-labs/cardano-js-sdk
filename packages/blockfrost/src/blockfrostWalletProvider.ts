@@ -8,6 +8,7 @@ import {
   ProviderError,
   ProviderFailure,
   ProviderUtil,
+  UtxoProvider,
   WalletProvider
 } from '@cardano-sdk/core';
 import { PaginationOptions } from '@blockfrost/blockfrost-js/lib/types';
@@ -41,10 +42,15 @@ const fetchByAddressSequentially = async <Item, Response>(props: {
  * Connect to the [Blockfrost service](https://docs.blockfrost.io/)
  *
  * @param {BlockFrostAPI} blockfrost BlockFrostAPI instance
+ * @param {UtxoProvider} utxoProvider utxo provider
  * @returns {WalletProvider} WalletProvider
  * @throws {ProviderFailure}
  */
-export const blockfrostWalletProvider = (blockfrost: BlockFrostAPI, logger = dummyLogger): WalletProvider => {
+export const blockfrostWalletProvider = (
+  blockfrost: BlockFrostAPI,
+  utxoProvider: UtxoProvider,
+  logger = dummyLogger
+): WalletProvider => {
   const ledgerTip: WalletProvider['ledgerTip'] = async () => {
     const block = await blockfrost.blocksLatest();
     return BlockfrostToCore.blockToTip(block);
@@ -71,6 +77,9 @@ export const blockfrostWalletProvider = (blockfrost: BlockFrostAPI, logger = dum
       }
     };
   };
+
+  const utxoByAddresses: WalletProvider['utxoByAddresses'] = async (addresses) =>
+    utxoProvider.utxoByAddresses(addresses);
 
   const rewards: WalletProvider['rewardAccountBalance'] = async (rewardAccount: Cardano.RewardAccount) => {
     try {
@@ -397,7 +406,8 @@ export const blockfrostWalletProvider = (blockfrost: BlockFrostAPI, logger = dum
     rewardsHistory,
     stakePoolStats,
     transactionsByAddresses,
-    transactionsByHashes
+    transactionsByHashes,
+    utxoByAddresses
   };
 
   return ProviderUtil.withProviderErrors(providerFunctions, toProviderError);
