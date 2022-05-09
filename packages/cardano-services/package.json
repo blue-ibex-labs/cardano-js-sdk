@@ -27,7 +27,11 @@
     "prepack": "yarn build",
     "test:debug": "DEBUG=true yarn test",
     "run:http-server": "ts-node --transpile-only src/run.ts",
-    "cli": "ts-node --transpile-only src/cli.ts"
+    "cli": "ts-node --transpile-only src/cli.ts",
+    "mainnet:up": "DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker-compose -p cardano-services-mainnet up",
+    "mainnet:down": "docker-compose -p cardano-services-mainnet down",
+    "testnet:up": "DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 OGMIOS_PORT=1338 POSTGRES_PORT=5443 NETWORK=testnet docker-compose -p cardano-services-testnet up",
+    "testnet:down": "docker-compose -p cardano-services-testnet down"
   },
   "devDependencies": {
     "@cardano-sdk/cardano-services-client": "0.2.0",
