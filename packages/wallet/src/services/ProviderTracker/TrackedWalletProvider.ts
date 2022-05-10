@@ -54,7 +54,6 @@ export class TrackedWalletProvider extends ProviderTracker implements WalletProv
   readonly currentWalletProtocolParameters: WalletProvider['currentWalletProtocolParameters'];
   readonly genesisParameters: WalletProvider['genesisParameters'];
   readonly rewardsHistory: WalletProvider['rewardsHistory'];
-  readonly utxoByAddresses: WalletProvider['utxoByAddresses'];
 
   constructor(walletProvider: WalletProvider) {
     super();
@@ -65,7 +64,6 @@ export class TrackedWalletProvider extends ProviderTracker implements WalletProv
         ? () => this.trackedCall(walletProvider.stakePoolStats!, this.stats.stakePoolStats$)
         : undefined;
     this.ledgerTip = () => this.trackedCall(walletProvider.ledgerTip, this.stats.ledgerTip$);
-    this.utxoByAddresses = (addresses) => this.utxoByAddresses(addresses);
     this.rewardAccountBalance = (rewardAccount) =>
       this.trackedCall(() => walletProvider.rewardAccountBalance(rewardAccount), this.stats.rewardAccountBalance$);
     this.transactionsByAddresses = (addresses) =>
