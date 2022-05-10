@@ -9,7 +9,7 @@ import delay from 'delay';
  * returns UtxoProvider-compatible object
  */
 export const mockUtxoProvider = (): UtxoProvider => ({
-  healthCheck: jest.fn().mockResolvedValue(true),
+  healthCheck: jest.fn().mockResolvedValue({ ok: true }),
   utxoByAddresses: jest.fn().mockResolvedValue(utxo)
 });
 
