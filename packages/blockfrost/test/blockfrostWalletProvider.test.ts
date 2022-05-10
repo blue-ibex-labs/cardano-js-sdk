@@ -31,6 +31,48 @@ const generateUtxoResponseMock = (qty: number) =>
     tx_index: num
   })) as Responses['address_utxo_content'];
 
+const utxoResponse = [
+  [
+    {
+      address: Cardano.Address(
+        'addr_test1qz2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnj83ws8lhrn648jjxtwq2ytjqp'
+      ),
+      index: 0,
+      txId: Cardano.TransactionId('0f3abbc8fc19c2e61bab6059bf8a466e6e754833a08a62a6c56fe0e78f19d9d5')
+    },
+    {
+      address: Cardano.Address(
+        'addr_test1qz2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnj83ws8lhrn648jjxtwq2ytjqp'
+      ),
+      value: {
+        assets: new Map([
+          [Cardano.AssetId('b01fb3b8c3dd6b3705a5dc8bcd5a70759f70ad5d97a72005caeac3c652657675746f31333237'), 1n]
+        ]),
+        coins: 50_928_877n
+      }
+    }
+  ],
+  [
+    {
+      address: Cardano.Address(
+        'addr_test1qz2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnj83ws8lhrn648jjxtwq2ytjqp'
+      ),
+      index: 1,
+      txId: Cardano.TransactionId('0f3abbc8fc19c2e61bab6059bf8a466e6e754833a08a62a6c56fe0e78f19d9d5')
+    },
+    {
+      address: Cardano.Address(
+        'addr_test1qz2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnj83ws8lhrn648jjxtwq2ytjqp'
+      ),
+      value: {
+        assets: new Map([
+          [Cardano.AssetId('b01fb3b8c3dd6b3705a5dc8bcd5a70759f70ad5d97a72005caeac3c652657675746f31333237'), 2n]
+        ]),
+        coins: 50_928_878n
+      }
+    }
+  ]
+];
 const blockResponse = {
   block_vrf: 'vrf_vk19j362pkr4t9y0m3qxgmrv0365vd7c4ze03ny4jh84q8agjy4ep4s99zvg8',
   confirmations: 0,
@@ -96,7 +138,10 @@ describe('blockfrostWalletProvider', () => {
         .mockResolvedValueOnce(generateUtxoResponseMock(0));
 
       const blockfrost = new BlockFrostAPI({ isTestnet: true, projectId: apiKey });
-      const utxoProvider = utxoHttpProvider(url);
+      const utxoProvider = {
+        healthCheck: jest.fn().mockResolvedValue({ ok: true }),
+        utxoByAddresses: jest.fn().mockResolvedValue(utxoResponse)
+      };
       const client = blockfrostWalletProvider(blockfrost, utxoProvider);
 
       const response = await client.utxoByAddresses(
@@ -148,15 +193,11 @@ describe('blockfrostWalletProvider', () => {
     });
 
     test('unused addresses', async () => {
-      const notFoundBody = {
-        error: 'Not Found',
-        message: 'The requested component has not been found.',
-        status_code: 404
-      };
-      BlockFrostAPI.prototype.addressesUtxos = jest.fn().mockRejectedValue(notFoundBody);
-
       const blockfrost = new BlockFrostAPI({ isTestnet: true, projectId: apiKey });
-      const utxoProvider = utxoHttpProvider(url);
+      const utxoProvider = {
+        healthCheck: jest.fn().mockResolvedValue({ ok: true }),
+        utxoByAddresses: jest.fn().mockResolvedValue([])
+      };
       const client = blockfrostWalletProvider(blockfrost, utxoProvider);
       const response = await client.utxoByAddresses(
         [
