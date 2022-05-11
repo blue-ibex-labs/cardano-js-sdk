@@ -1,11 +1,10 @@
 import * as OpenApiValidator from 'express-openapi-validator';
-import { Awaited } from '../types';
 import { ChainHistoryProvider, ProviderError, ProviderFailure } from '@cardano-sdk/core';
 import { DbSyncChainHistoryProvider } from './DbSyncChainHistoryProvider/DbSyncChainHistory';
 import { HttpServer, HttpService } from '../Http';
 import { Logger, dummyLogger } from 'ts-log';
+import { ProviderHandler, providerHandler } from '../util';
 import { ServiceNames } from '../Program';
-import { providerHandler } from '../util';
 import express from 'express';
 import path from 'path';
 
@@ -42,49 +41,27 @@ export class ChainHistoryHttpService extends HttpService {
         validateResponses: true
       })
     );
-    // TODO: refactor providerHandler to get Args and Response types on its own?
-    //       and use it as providerHandler<typeof chainHistoryProvider.blocksByHashes>
+
+    const routeHandler: ProviderHandler = async (args, _r, res, _n, handler) => {
+      try {
+        return HttpServer.sendJSON(res, await handler(...args));
+      } catch (error) {
+        logger.error(error);
+        return HttpServer.sendJSON(res, new ProviderError(ProviderFailure.Unhealthy, error), 500);
+      }
+    };
+
     router.post(
       '/blocks/hash',
-      providerHandler<
-        Parameters<typeof chainHistoryProvider.blocksByHashes>,
-        Awaited<ReturnType<typeof chainHistoryProvider.blocksByHashes>>
-      >(async ([hashes], _, res) => {
-        try {
-          return HttpServer.sendJSON(res, await chainHistoryProvider.blocksByHashes(hashes));
-        } catch (error) {
-          logger.error(error);
-          return HttpServer.sendJSON(res, new ProviderError(ProviderFailure.Unhealthy, error), 500);
-        }
-      }, logger)
+      providerHandler(chainHistoryProvider.blocksByHashes.bind(chainHistoryProvider))(routeHandler, logger)
     );
     router.post(
       '/txs/hash',
-      providerHandler<
-        Parameters<typeof chainHistoryProvider.transactionsByHashes>,
-        Awaited<ReturnType<typeof chainHistoryProvider.transactionsByHashes>>
-      >(async ([hashes], _, res) => {
-        try {
-          return HttpServer.sendJSON(res, await chainHistoryProvider.transactionsByHashes(hashes));
-        } catch (error) {
-          logger.error(error);
-          return HttpServer.sendJSON(res, new ProviderError(ProviderFailure.Unhealthy, error), 500);
-        }
-      }, logger)
+      providerHandler(chainHistoryProvider.transactionsByHashes.bind(chainHistoryProvider))(routeHandler, logger)
     );
     router.post(
       '/txs/address',
-      providerHandler<
-        Parameters<typeof chainHistoryProvider.transactionsByAddresses>,
-        Awaited<ReturnType<typeof chainHistoryProvider.transactionsByAddresses>>
-      >(async ([addresses, sinceBlock], _, res) => {
-        try {
-          return HttpServer.sendJSON(res, await chainHistoryProvider.transactionsByAddresses(addresses, sinceBlock));
-        } catch (error) {
-          logger.error(error);
-          return HttpServer.sendJSON(res, new ProviderError(ProviderFailure.Unhealthy, error), 500);
-        }
-      }, logger)
+      providerHandler(chainHistoryProvider.transactionsByAddresses.bind(chainHistoryProvider))(routeHandler, logger)
     );
     return new ChainHistoryHttpService({ chainHistoryProvider, logger }, router);
   }

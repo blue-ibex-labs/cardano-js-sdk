@@ -4920,87 +4920,6 @@ Array [
         },
       },
     ],
-    "hexId": "5d99282bbb4840380bb98c075498ed1983aee18a4a0925b9b44d93f1",
-    "id": "pool1tkvjs2amfpqrszae3sr4fx8drxp6acv2fgyjtwd5fkflzguqp96",
-    "margin": Object {
-      "denominator": 1000,
-      "numerator": 27,
-    },
-    "metadata": Object {
-      "description": "Pool a of the banderini devtest staking pools",
-      "homepage": "http://www.banderini.net",
-      "name": "banderini-devtest-a",
-      "ticker": "BANDA",
-    },
-    "metadataJson": Object {
-      "hash": "4d89054c2962215694a7122dfe41bc728d3ec248f80ea9a2e0d493057d7d2338",
-      "url": "https://git.io/JJ7wm",
-    },
-    "metrics": Object {
-      "blocksCreated": "0",
-      "delegators": "1",
-      "livePledge": Object {
-        "__type": "bigint",
-        "value": "495463149",
-      },
-      "saturation": "0.000005891297734713692672",
-      "size": Object {
-        "active": "0.0000000000000000000000000000",
-        "live": "1.00000000000000000000",
-      },
-      "stake": Object {
-        "active": Object {
-          "__type": "bigint",
-          "value": "0",
-        },
-        "live": Object {
-          "__type": "bigint",
-          "value": "495463149",
-        },
-      },
-    },
-    "owners": Array [
-      "stake_test1upx9faamuf54pm7alg4lna5l7ll08pz833rj45tgr9m2jyceasqjt",
-    ],
-    "pledge": Object {
-      "__type": "bigint",
-      "value": "100000000",
-    },
-    "relays": Array [],
-    "rewardAccount": "stake_test1upx9faamuf54pm7alg4lna5l7ll08pz833rj45tgr9m2jyceasqjt",
-    "status": "active",
-    "transactions": Object {
-      "registration": Array [
-        "047ee144d7adc5f10a107bf13eab570833bf2fb8bb6b016d030739a4cc585aa7",
-      ],
-      "retirement": Array [],
-    },
-    "vrf": "c062fabfeb7a68c61c34532e6f441b999c6a5a30b409d24c93174f047d4d935a",
-  },
-  Object {
-    "cost": Object {
-      "__type": "bigint",
-      "value": "340000000",
-    },
-    "epochRewards": Array [
-      Object {
-        "activeStake": Object {
-          "__type": "bigint",
-          "value": "0",
-        },
-        "epoch": 175,
-        "epochLength": 431949000,
-        "memberROI": 0,
-        "operatorFees": Object {
-          "__type": "bigint",
-          "value": "0",
-        },
-        "totalRewards": Object {
-          "__type": "bigint",
-          "value": "0",
-        },
-      },
-    ],
     "hexId": "961d329fba1807eef89db767ba405aec0c5426501c6b1df20f5c0995",
     "id": "pool1jcwn98a6rqr7a7yakanm5sz6asx9gfjsr343mus0tsye23wmg70",
     "margin": Object {
@@ -5062,7 +4981,7 @@ Array [
   Object {
     "cost": Object {
       "__type": "bigint",
-      "value": "400000000",
+      "value": "340000000",
     },
     "epochRewards": Array [
       Object {
@@ -5083,30 +5002,30 @@ Array [
         },
       },
     ],
-    "hexId": "5ee7591bf30eaa4f5dce70b4a676eb02d5be8012d188f04fe3beffb0",
-    "id": "pool1tmn4jxlnp64y7hwwwz62vahtqt2maqqj6xy0qnlrhmlmq3u8q0e",
+    "hexId": "5d99282bbb4840380bb98c075498ed1983aee18a4a0925b9b44d93f1",
+    "id": "pool1tkvjs2amfpqrszae3sr4fx8drxp6acv2fgyjtwd5fkflzguqp96",
     "margin": Object {
-      "denominator": 10000,
-      "numerator": 1,
+      "denominator": 1000,
+      "numerator": 27,
     },
     "metadata": Object {
-      "description": "Our Amsterdam Node",
-      "homepage": "https://twitter.com/A92Syed",
-      "name": "THE AMSTERDAM NODE",
-      "ticker": "AMS",
+      "description": "Pool a of the banderini devtest staking pools",
+      "homepage": "http://www.banderini.net",
+      "name": "banderini-devtest-a",
+      "ticker": "BANDA",
     },
     "metadataJson": Object {
-      "hash": "cc019105f084aef2a956b2f7f2c0bf4e747bf7696705312c244620089429df6f",
-      "url": "https://git.io/JJ1dz",
+      "hash": "4d89054c2962215694a7122dfe41bc728d3ec248f80ea9a2e0d493057d7d2338",
+      "url": "https://git.io/JJ7wm",
     },
     "metrics": Object {
       "blocksCreated": "0",
       "delegators": "1",
       "livePledge": Object {
         "__type": "bigint",
-        "value": "487464117",
+        "value": "495463149",
       },
-      "saturation": "0.000005796185355121759915",
+      "saturation": "0.000005891297734713692672",
       "size": Object {
         "active": "0.0000000000000000000000000000",
         "live": "1.00000000000000000000",
@@ -5118,27 +5037,27 @@ Array [
         },
         "live": Object {
           "__type": "bigint",
-          "value": "487464117",
+          "value": "495463149",
         },
       },
     },
     "owners": Array [
-      "stake_test1uz9y7juwzcyanva4x4fzpx7tft6ckntn6ulsjjd2k7a0pxgldmzp5",
+      "stake_test1upx9faamuf54pm7alg4lna5l7ll08pz833rj45tgr9m2jyceasqjt",
     ],
     "pledge": Object {
       "__type": "bigint",
-      "value": "500000000",
+      "value": "100000000",
     },
     "relays": Array [],
-    "rewardAccount": "stake_test1uz9y7juwzcyanva4x4fzpx7tft6ckntn6ulsjjd2k7a0pxgldmzp5",
+    "rewardAccount": "stake_test1upx9faamuf54pm7alg4lna5l7ll08pz833rj45tgr9m2jyceasqjt",
     "status": "active",
     "transactions": Object {
       "registration": Array [
-        "0d3c928318f489a93b2ceba60f1998594f3626e4018ad19adf0a9615164b5469",
+        "047ee144d7adc5f10a107bf13eab570833bf2fb8bb6b016d030739a4cc585aa7",
       ],
       "retirement": Array [],
     },
-    "vrf": "83a817519ec34d3c637db8f9d46fcf6f7f9e826093d1b9a8158c89da4b47a801",
+    "vrf": "c062fabfeb7a68c61c34532e6f441b999c6a5a30b409d24c93174f047d4d935a",
   },
   Object {
     "cost": Object {
@@ -5220,6 +5139,87 @@ Array [
       "retirement": Array [],
     },
     "vrf": "474a6d2a44b51add62d8f2fd8fe80abc722bf84478479b617ad05b39aaa84971",
+  },
+  Object {
+    "cost": Object {
+      "__type": "bigint",
+      "value": "400000000",
+    },
+    "epochRewards": Array [
+      Object {
+        "activeStake": Object {
+          "__type": "bigint",
+          "value": "0",
+        },
+        "epoch": 175,
+        "epochLength": 431949000,
+        "memberROI": 0,
+        "operatorFees": Object {
+          "__type": "bigint",
+          "value": "0",
+        },
+        "totalRewards": Object {
+          "__type": "bigint",
+          "value": "0",
+        },
+      },
+    ],
+    "hexId": "5ee7591bf30eaa4f5dce70b4a676eb02d5be8012d188f04fe3beffb0",
+    "id": "pool1tmn4jxlnp64y7hwwwz62vahtqt2maqqj6xy0qnlrhmlmq3u8q0e",
+    "margin": Object {
+      "denominator": 10000,
+      "numerator": 1,
+    },
+    "metadata": Object {
+      "description": "Our Amsterdam Node",
+      "homepage": "https://twitter.com/A92Syed",
+      "name": "THE AMSTERDAM NODE",
+      "ticker": "AMS",
+    },
+    "metadataJson": Object {
+      "hash": "cc019105f084aef2a956b2f7f2c0bf4e747bf7696705312c244620089429df6f",
+      "url": "https://git.io/JJ1dz",
+    },
+    "metrics": Object {
+      "blocksCreated": "0",
+      "delegators": "1",
+      "livePledge": Object {
+        "__type": "bigint",
+        "value": "487464117",
+      },
+      "saturation": "0.000005796185355121759915",
+      "size": Object {
+        "active": "0.0000000000000000000000000000",
+        "live": "1.00000000000000000000",
+      },
+      "stake": Object {
+        "active": Object {
+          "__type": "bigint",
+          "value": "0",
+        },
+        "live": Object {
+          "__type": "bigint",
+          "value": "487464117",
+        },
+      },
+    },
+    "owners": Array [
+      "stake_test1uz9y7juwzcyanva4x4fzpx7tft6ckntn6ulsjjd2k7a0pxgldmzp5",
+    ],
+    "pledge": Object {
+      "__type": "bigint",
+      "value": "500000000",
+    },
+    "relays": Array [],
+    "rewardAccount": "stake_test1uz9y7juwzcyanva4x4fzpx7tft6ckntn6ulsjjd2k7a0pxgldmzp5",
+    "status": "active",
+    "transactions": Object {
+      "registration": Array [
+        "0d3c928318f489a93b2ceba60f1998594f3626e4018ad19adf0a9615164b5469",
+      ],
+      "retirement": Array [],
+    },
+    "vrf": "83a817519ec34d3c637db8f9d46fcf6f7f9e826093d1b9a8158c89da4b47a801",
   },
 ]
 `;
