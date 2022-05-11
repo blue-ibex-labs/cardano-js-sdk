@@ -1,9 +1,11 @@
 import { BigIntMath, Cardano, ProtocolParametersRequiredByWallet } from '@cardano-sdk/core';
+import { NO_CONSTRAINTS } from '@cardano-sdk/cip2';
 import { ObservableWallet, OutputValidation } from '../types';
 import { ResolveInputAddress } from '../KeyManagement';
-import { computeMinimumCoinQuantity, tokenBundleSizeExceedsLimit } from '@cardano-sdk/cip2';
 import { firstValueFrom } from 'rxjs';
 import { txInEquals } from './util';
+
+const { computeMinimumCoinQuantity, tokenBundleSizeExceedsLimit } = NO_CONSTRAINTS;
 
 /**
  * @returns common wallet utility functions that are aware of wallet state and computes useful things

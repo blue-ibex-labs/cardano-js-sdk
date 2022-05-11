@@ -1,4 +1,4 @@
 export * from './RoundRobinRandomImprove';
-export * from './selectionConstraints';
+export * from './MockSelectionConstraints';
 export * from './types';
 export * from './InputSelectionError';

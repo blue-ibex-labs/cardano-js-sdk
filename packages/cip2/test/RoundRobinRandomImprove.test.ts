@@ -1,5 +1,6 @@
-import { AssetId, SelectionConstraints, TxTestUtil } from '@cardano-sdk/util-dev';
+import { AssetId, TxTestUtil } from '@cardano-sdk/util-dev';
 import { InputSelectionError, InputSelectionFailure } from '../src/InputSelectionError';
+import { MOCK_NO_CONSTRAINTS, NO_CONSTRAINTS, mockConstraintsToConstraints } from '../src/MockSelectionConstraints';
 import {
   assertFailureProperties,
   assertInputSelectionProperties,
@@ -18,7 +19,7 @@ describe('RoundRobinRandomImprove', () => {
           createOutputs: () => [TxTestUtil.createOutput({ coins: 3_000_000n })],
           createUtxo: () => [TxTestUtil.createUnspentTxOutput({ coins: 3_000_000n })],
           getAlgorithm: roundRobinRandomImprove,
-          mockConstraints: SelectionConstraints.MOCK_NO_CONSTRAINTS
+          mockConstraints: MOCK_NO_CONSTRAINTS
         });
       });
       it('No outputs', async () => {
@@ -28,7 +29,7 @@ describe('RoundRobinRandomImprove', () => {
           createUtxo: () => [TxTestUtil.createUnspentTxOutput({ coins: 11_999_994n })],
           getAlgorithm: roundRobinRandomImprove,
           mockConstraints: {
-            ...SelectionConstraints.MOCK_NO_CONSTRAINTS,
+            ...MOCK_NO_CONSTRAINTS,
             minimumCoinQuantity: 9_999_991n,
             minimumCostCoefficient: 2_000_003n
           }
@@ -42,14 +43,14 @@ describe('RoundRobinRandomImprove', () => {
             TxTestUtil.createUnspentTxOutput({ assets: new Map([[AssetId.TSLA, 7001n]]), coins: 11_999_994n })
           ],
           getAlgorithm: roundRobinRandomImprove,
-          mockConstraints: SelectionConstraints.MOCK_NO_CONSTRAINTS
+          mockConstraints: MOCK_NO_CONSTRAINTS
         });
       });
       it('Selects UTxO even when implicit input covers outputs', async () => {
         const utxo = new Set([TxTestUtil.createUnspentTxOutput({ coins: 10_000_000n })]);
         const outputs = new Set([TxTestUtil.createOutput({ coins: 1_000_000n })]);
         const results = await roundRobinRandomImprove().select({
-          constraints: SelectionConstraints.NO_CONSTRAINTS,
+          constraints: NO_CONSTRAINTS,
           implicitCoin: { input: 2_000_000n },
           outputs,
           utxo
@@ -77,8 +78,8 @@ describe('RoundRobinRandomImprove', () => {
         const random = jest.fn().mockReturnValue(0).mockReturnValueOnce(0).mockReturnValueOnce(0.99);
 
         const results = await roundRobinRandomImprove({ random }).select({
-          constraints: SelectionConstraints.mockConstraintsToConstraints({
-            ...SelectionConstraints.MOCK_NO_CONSTRAINTS,
+          constraints: mockConstraintsToConstraints({
+            ...MOCK_NO_CONSTRAINTS,
             minimumCoinQuantity: 900_000n,
             minimumCostCoefficient: 200_000n
           }),
@@ -103,7 +104,7 @@ describe('RoundRobinRandomImprove', () => {
             ],
             expectedError: InputSelectionFailure.UtxoBalanceInsufficient,
             getAlgorithm: roundRobinRandomImprove,
-            mockConstraints: SelectionConstraints.MOCK_NO_CONSTRAINTS
+            mockConstraints: MOCK_NO_CONSTRAINTS
           });
         });
         it('Coin (Outputs+Fee>UTxO)', async () => {
@@ -116,7 +117,7 @@ describe('RoundRobinRandomImprove', () => {
             expectedError: InputSelectionFailure.UtxoBalanceInsufficient,
             getAlgorithm: roundRobinRandomImprove,
             mockConstraints: {
-              ...SelectionConstraints.MOCK_NO_CONSTRAINTS,
+              ...MOCK_NO_CONSTRAINTS,
               minimumCostCoefficient: 1n
             }
           });
@@ -131,7 +132,7 @@ describe('RoundRobinRandomImprove', () => {
             ],
             expectedError: InputSelectionFailure.UtxoBalanceInsufficient,
             getAlgorithm: roundRobinRandomImprove,
-            mockConstraints: SelectionConstraints.MOCK_NO_CONSTRAINTS
+            mockConstraints: MOCK_NO_CONSTRAINTS
           });
         });
         it('No UTxO', async () => {
@@ -140,7 +141,7 @@ describe('RoundRobinRandomImprove', () => {
             createUtxo: () => [],
             expectedError: InputSelectionFailure.UtxoBalanceInsufficient,
             getAlgorithm: roundRobinRandomImprove,
-            mockConstraints: SelectionConstraints.MOCK_NO_CONSTRAINTS
+            mockConstraints: MOCK_NO_CONSTRAINTS
           });
         });
       });
@@ -155,7 +156,7 @@ describe('RoundRobinRandomImprove', () => {
             expectedError: InputSelectionFailure.UtxoFullyDepleted,
             getAlgorithm: roundRobinRandomImprove,
             mockConstraints: {
-              ...SelectionConstraints.MOCK_NO_CONSTRAINTS,
+              ...MOCK_NO_CONSTRAINTS,
               minimumCoinQuantity: 2n
             }
           });
@@ -183,7 +184,7 @@ describe('RoundRobinRandomImprove', () => {
             expectedError: InputSelectionFailure.UtxoFullyDepleted,
             getAlgorithm: roundRobinRandomImprove,
             mockConstraints: {
-              ...SelectionConstraints.MOCK_NO_CONSTRAINTS,
+              ...MOCK_NO_CONSTRAINTS,
               maxTokenBundleSize: 1
             }
           });
@@ -200,7 +201,7 @@ describe('RoundRobinRandomImprove', () => {
           expectedError: InputSelectionFailure.MaximumInputCountExceeded,
           getAlgorithm: roundRobinRandomImprove,
           mockConstraints: {
-            ...SelectionConstraints.MOCK_NO_CONSTRAINTS,
+            ...MOCK_NO_CONSTRAINTS,
             selectionLimit: 2
           }
         });
@@ -221,7 +222,7 @@ describe('RoundRobinRandomImprove', () => {
 
           try {
             const results = await algorithm.select({
-              constraints: SelectionConstraints.mockConstraintsToConstraints(constraints),
+              constraints: mockConstraintsToConstraints(constraints),
               implicitCoin,
               outputs,
               utxo: new Set(utxo)
