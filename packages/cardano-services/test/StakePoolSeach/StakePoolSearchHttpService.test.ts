@@ -67,7 +67,7 @@ describe('StakePoolSearchHttpService', () => {
 
     describe('/health', () => {
       it('forwards the stakePoolSearchProvider health response', async () => {
-        const res = await got(`${apiUrlBase}/health`, {
+        const res = await got.post(`${apiUrlBase}/health`, {
           headers: { 'Content-Type': APPLICATION_JSON }
         });
         expect(res.statusCode).toBe(200);

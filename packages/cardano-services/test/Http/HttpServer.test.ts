@@ -213,7 +213,7 @@ describe('HttpServer', () => {
     });
 
     it('health', async () => {
-      const res = await got(`${apiUrlBase}/some-http-service/health`, {
+      const res = await got.post(`${apiUrlBase}/some-http-service/health`, {
         headers: { [CONTENT_TYPE]: 'application/json' }
       });
       expect(res.statusCode).toBe(200);

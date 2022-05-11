@@ -15,7 +15,7 @@ const exePath = (name: 'cli' | 'run') => path.join(__dirname, '..', 'dist', `${n
 const assertServiceHealthy = async (apiUrl: string, serviceName: ServiceNames) => {
   await serverReady(apiUrl);
   const headers = { 'Content-Type': 'application/json' };
-  const res = await got(`${apiUrl}/${serviceName}/health`, { headers });
+  const res = await got.post(`${apiUrl}/${serviceName}/health`, { headers });
   expect(res.statusCode).toBe(200);
   expect(JSON.parse(res.body)).toEqual({ ok: true });
 };
