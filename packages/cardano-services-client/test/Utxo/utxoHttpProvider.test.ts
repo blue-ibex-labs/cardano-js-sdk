@@ -21,13 +21,13 @@ describe('utxoHttpProvider', () => {
       });
 
       it('is ok if 200 response body is { ok: true }', async () => {
-        got.get = jest.fn().mockReturnValue({ json: jest.fn().mockResolvedValue({ ok: true }) });
+        got.post = jest.fn().mockReturnValue({ json: jest.fn().mockResolvedValue({ ok: true }) });
         const provider = utxoHttpProvider(url);
         await expect(provider.healthCheck()).resolves.toEqual({ ok: true });
       });
 
       it('is not ok if 200 response body is { ok: false }', async () => {
-        got.get = jest.fn().mockReturnValue({ json: jest.fn().mockResolvedValue({ ok: false }) });
+        got.post = jest.fn().mockReturnValue({ json: jest.fn().mockResolvedValue({ ok: false }) });
         const provider = utxoHttpProvider(url);
         await expect(provider.healthCheck()).resolves.toEqual({ ok: false });
       });
