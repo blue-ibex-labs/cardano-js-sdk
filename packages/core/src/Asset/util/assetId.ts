@@ -14,10 +14,7 @@ export const createAssetId = (scriptHash: CSL.ScriptHash, assetName: CSL.AssetNa
  * @returns {AssetId} concatenated policy id and asset name
  */
 export const assetIdFromPolicyAndName = (policyId: PolicyId, assetName: AssetName): AssetId =>
-  createAssetId(
-    CSL.ScriptHash.from_bytes(Buffer.from(policyId, 'hex')),
-    CSL.AssetName.new(Buffer.from(assetName, 'hex'))
-  );
+  AssetId(policyId.toString() + assetName.toString());
 
 export const parseAssetId = (assetId: AssetId) => {
   const policyId = policyIdFromAssetId(assetId);
