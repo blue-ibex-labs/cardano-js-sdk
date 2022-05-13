@@ -56,7 +56,7 @@ class RabbitMqTxSubmitProvider implements TxSubmitProvider {
   }
 
   /**
-   * Idempotently (hannel.assertQueue does the job for us) creates the queue
+   * Idempotently (channel.assertQueue does the job for us) creates the queue
    *
    * @param {boolean} force Forces the creation of the queue just to have a response from the server
    */
