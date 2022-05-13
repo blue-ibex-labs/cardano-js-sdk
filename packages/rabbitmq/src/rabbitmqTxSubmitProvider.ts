@@ -8,7 +8,7 @@ const queue = 'tx-submission';
 /**
  * Wraps the AMQP connaction handling exposing the methods required by the Provider
  */
-class AMQPWrapper implements TxSubmitProvider {
+class RabbitMqTxSubmitProvider implements TxSubmitProvider {
   #channel?: Channel;
   #connection?: Connection;
   #connectionURL: URL;
