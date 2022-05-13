@@ -37,7 +37,7 @@ class RabbitMqTxSubmitProvider implements TxSubmitProvider {
   /**
    * Connects to the RabbitMQ server and create the channel
    */
-  async #connect() {
+  async #connectAndCreateChannel() {
     if (this.#connection) return;
 
     try {
