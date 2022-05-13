@@ -121,4 +121,3 @@ class RabbitMqTxSubmitProvider implements TxSubmitProvider {
  * @param {Logger} logger object implementing the Logger abstract class
  * @returns {TxSubmitProvider} TxSubmitProvider
  */
-  new AMQPWrapper(connectionURL, logger);
